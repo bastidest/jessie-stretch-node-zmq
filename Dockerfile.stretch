@@ -1,0 +1,15 @@
+FROM debian:stretch
+
+WORKDIR /app
+
+RUN apt-get update
+RUN apt-get -y install curl gnupg
+RUN curl -sL https://deb.nodesource.com/setup_11.x  | bash -
+RUN apt-get -y install nodejs
+RUN apt-get -y install build-essential libzmq5 libzmq5-dev
+
+COPY ./package.json /app/package.json
+RUN npm_config_zmq_external="true" npm install zeromq --zmq-external
+
+COPY ./app.js ./test.sh /app/
+CMD ["bash", "test.sh"]
